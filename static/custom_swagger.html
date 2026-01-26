@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>API Documentation</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+      .swagger-ui .topbar {
+        display: none !important;
+      }
+      #custom-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+      }
+      .left-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      #tagFilter {
+        height: 38px;
+        min-width: 180px;
+        padding: 0 10px;
+        font-size: 14px;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background: #fff;
+        color: #333;
+      }
+      #tagFilter:focus {
+        border-color: #4fc3f7;
+        box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.3);
+      }
+      .btn-clear {
+        height: 38px;
+        padding: 0 12px;
+        font-size: 14px;
+        background: #e0e0e0;
+        color: #333;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .btn-clear:hover {
+        background: #cfcfcf;
+        border-color: #bbb;
+      }
+      .btn-clear svg {
+        width: 14px;
+        height: 14px;
+        fill: #555;
+      }
+      #no-results-msg {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <div id="custom-controls" style="display: none">
+      <div class="left-group">
+        <select id="tagFilter">
+          <option value="">All Sections</option>
+        </select>
+        <button type="button" class="btn-clear">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+          Clear
+        </button>
+      </div>
+      <div class="right-group"></div>
+    </div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+      const ui = SwaggerUIBundle({
+        url: "/openapi.json",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        presets: [SwaggerUIBundle.presets.apis],
+        layout: "BaseLayout",
+        tagsSorter: "alpha",
+        operationsSorter: "method",
+      });
+
+      const waiter = setInterval(() => {
+        const header = document.querySelector(".swagger-ui .info");
+        const authWrap = document.querySelector(".swagger-ui .auth-wrapper");
+        const tagSecs = document.querySelectorAll(".opblock-tag-section");
+        if (header && authWrap && tagSecs.length) {
+          clearInterval(waiter);
+          init(header, authWrap, tagSecs);
+        }
+      }, 100);
+
+      function init(header, authWrap, tagSecs) {
+        const controls = document.getElementById("custom-controls");
+        controls.style.display = "flex";
+        header.parentNode.insertBefore(controls, header.nextSibling);
+
+        const right = document.querySelector("#custom-controls .right-group");
+        right.appendChild(authWrap);
+        authWrap.style.margin = "0";
+
+        const tagFilter = document.getElementById("tagFilter");
+        const seen = new Set();
+        tagSecs.forEach((sec) => {
+          const name = sec.querySelector(".opblock-tag")?.innerText.trim();
+          if (name && !seen.has(name)) {
+            seen.add(name);
+            const opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            tagFilter.appendChild(opt);
+          }
+        });
+
+        const clearBtn = document.querySelector(".btn-clear");
+
+        function applyFilters() {
+          const tagSel = tagFilter.value;
+          let visible = 0;
+
+          tagSecs.forEach((sec) => {
+            const tagName =
+              sec.querySelector(".opblock-tag")?.innerText.trim() || "";
+            const ops = sec.querySelectorAll(".opblock");
+            let secVisible = false;
+
+            ops.forEach((op) => {
+              const matchTag = !tagSel || tagName === tagSel;
+              op.style.display = matchTag ? "" : "none";
+              if (matchTag) {
+                secVisible = true;
+                visible++;
+              }
+            });
+
+            sec.style.display =
+              (!tagSel || tagName === tagSel) && secVisible ? "block" : "none";
+          });
+
+          const msg = document.getElementById("no-results-msg");
+          if (visible === 0) {
+            if (!msg) {
+              const div = document.createElement("div");
+              div.id = "no-results-msg";
+              div.textContent = "No APIs match your filter.";
+              document.querySelector("#swagger-ui").prepend(div);
+            }
+          } else if (msg) msg.remove();
+        }
+
+        function resetFilters() {
+          tagFilter.value = "";
+          applyFilters();
+        }
+
+        tagFilter.addEventListener("change", applyFilters);
+        clearBtn.addEventListener("click", resetFilters);
+        applyFilters();
+      }
+    </script>
+  </body>
+</html>

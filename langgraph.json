@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "chat_agent": "./app/assistant/agent.py:graph"
+  },
+  "env": "./.env",
+  "stream_mode": true
+}
