@@ -39,10 +39,10 @@ from app.models.enums import PaymentMethod, PaymentType, StatusEnum, Tags, RoleN
 from app.crud import content_crud
 
 
-BOOKINGS_CSV = "app/utils/bookings.csv"
-PAYMENTS_CSV = "app/utils/payments.csv"
-REVIEWS_CSV = "app/utils/reviews.csv"
-LOCATION_CSV = "app/utils/locations.csv"
+BOOKINGS_CSV = "app/utils/seed_data/bookings.csv"
+PAYMENTS_CSV = "app/utils/seed_data/payments.csv"
+REVIEWS_CSV = "app/utils/seed_data/reviews.csv"
+LOCATION_CSV = "app/utils/seed_data/locations.csv"
 
 
 def dt(v):

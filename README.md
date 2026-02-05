@@ -202,7 +202,7 @@ The API will be available at:
 ## Project Structure
 
 ```
-crs_assistant/
+cruizo_backend/
 │
 ├── alembic/                          # Database migration scripts
 │   ├── versions/                     # Migration version files

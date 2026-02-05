@@ -220,7 +220,7 @@ class UserCRUD:
 
 
     async def create_admin_details(
-        self, db: AsyncSession, user_id: str, data: schemas.AdminDetailsUpdate
+        self, db: AsyncSession, user_id: str, data: schemas.AdminDetailsUpdate, profile_url: Optional[str] = None
     ) -> models.AdminDetails:
         """
         Create admin details for a user.
@@ -229,11 +229,16 @@ class UserCRUD:
             db: DB session
             user_id: User ID
             data: Admin details schema
+            profile_url: Optional profile URL to set
 
         Returns:
             Created AdminDetails record
         """
         db_admin = models.AdminDetails(admin_id=user_id, **data.model_dump())
+
+        if profile_url is not None:
+            db_admin.profile_url = profile_url
+        
         db.add(db_admin)
         await db.commit()
         await db.refresh(db_admin)
@@ -241,7 +246,7 @@ class UserCRUD:
 
 
     async def update_admin_details(
-        self, db: AsyncSession, db_admin: models.AdminDetails, data: schemas.AdminDetailsUpdate
+        self, db: AsyncSession, db_admin: models.AdminDetails, data: schemas.AdminDetailsUpdate, profile_url: Optional[str] = None
     ) -> models.AdminDetails:
         """
         Update existing admin profile details.
@@ -250,12 +255,16 @@ class UserCRUD:
             db: DB session
             db_admin: Existing AdminDetails ORM object
             data: Update schema
+            profile_url: Optional profile URL to update
 
         Returns:
             Updated AdminDetails object
         """
         for key, value in data.model_dump(exclude_none=True).items():
             setattr(db_admin, key, value)
+        
+        if profile_url is not None:
+            setattr(db_admin, 'profile_url', profile_url)
 
         await db.commit()
         await db.refresh(db_admin)

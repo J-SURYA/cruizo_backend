@@ -17,7 +17,7 @@ pandas==3.0.0
 passlib[bcrypt]==1.7.4
 pgvector==0.4.2
 psycopg[binary]==3.3.2
-pymongo==4.16.0s
+pymongo==4.16.0
 python-jose==3.5.0
 python-multipart==0.0.22
 redis==7.1.0

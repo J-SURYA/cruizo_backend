@@ -10,7 +10,7 @@ blob_service_client = BlobServiceClient.from_connection_string(
 )
 
 
-async def get_blob_service_client() -> BlobServiceClient:
+def get_blob_service_client() -> BlobServiceClient:
     """
     Initializes and returns the Azure Blob Service client.
 

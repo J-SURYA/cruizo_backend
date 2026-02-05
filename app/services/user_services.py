@@ -252,46 +252,6 @@ class UserService:
             )
 
 
-    async def upload_profile_image(
-        self, db: AsyncSession, user: models.User, file: UploadFile
-    ) -> schemas.ImageUrlResponse:
-        """
-        Uploads profile image and updates user profile URL in database.
-        
-        Args:
-            db: Database session
-            user: User object
-            file: Profile image file
-        
-        Returns:
-            URL of the uploaded profile image
-        """
-        image_url = await self._upload_image_and_get_url(
-            container_name=settings.PROFILE_CONTAINER_NAME,
-            file=file,
-            blob_name=self._sanitize_username(user.username),
-        )
-
-        role_name = user.role.name.lower()
-        if role_name == "customer":
-            db_customer = await user_crud.get_customer_details(db, user.id)
-            if not db_customer:
-                raise NotFoundException("Customer profile not found")
-            await user_crud.update_customer_details(
-                db, db_customer, {"profile_url": image_url}
-            )
-        else:
-            db_admin = await user_crud.get_admin_details(db, user.id)
-            if not db_admin:
-                raise NotFoundException("Admin profile not found")
-            updated_schema = schemas.AdminDetailsUpdate(
-                name=db_admin.name, phone=db_admin.phone, profile_url=image_url
-            )
-            await user_crud.update_admin_details(db, db_admin, updated_schema)
-
-        return schemas.ImageUrlResponse(url=image_url)
-
-
     async def upload_aadhaar_images(
         self,
         db: AsyncSession,
@@ -538,13 +498,13 @@ class UserService:
         data_dict = data.model_dump(exclude_none=True)
         data_dict = {k: v for k, v in data_dict.items() if v != "" and v is not None}
 
+        uploaded_profile_url = None
         if profile_image is not None:
-            uploaded = await self._upload_image_and_get_url(
+            uploaded_profile_url = await self._upload_image_and_get_url(
                 container_name=settings.PROFILE_CONTAINER_NAME,
                 file=profile_image,
                 blob_name=self._sanitize_username(user.username),
             )
-            data_dict["profile_url"] = uploaded
 
         data = schemas.AdminDetailsUpdate(**data_dict)
 
@@ -559,13 +519,13 @@ class UserService:
                         data_dict[field] = existing_value
 
                 data = schemas.AdminDetailsUpdate(**data_dict)
-                updated = await user_crud.update_admin_details(db, db_admin, data)
+                updated = await user_crud.update_admin_details(db, db_admin, data, profile_url=uploaded_profile_url)
             else:
                 if not data_dict.get("name") or not data_dict.get("phone"):
                     raise ValueError(
                         "Name and phone are required for new admin profile"
                     )
-                updated = await user_crud.create_admin_details(db, user.id, data)
+                updated = await user_crud.create_admin_details(db, user.id, data, profile_url=uploaded_profile_url)
 
         except IntegrityError:
             await db.rollback()

@@ -67,7 +67,7 @@ def get_blob_service_client() -> BlobServiceClient:
     Returns:
         An instance of BlobServiceClient.
     """
-    return blob_storage.blob_service_client
+    return blob_storage.get_blob_service_client()
 
 
 async def get_container_client(container: str) -> ContainerClient:
@@ -80,4 +80,4 @@ async def get_container_client(container: str) -> ContainerClient:
     Yields:
         An instance of ContainerClient.
     """
-    return  blob_storage.get_blob_service_client().get_container_client(container)
+    return blob_storage.get_blob_service_client().get_container_client(container)
