@@ -2,9 +2,57 @@
 
 ## Cruizo - Premium Car Rentals | Fast, Easy, Affordable
 
-An AI-powered Car Rental System (CRS) built with FastAPI and LangGraph framework.
+Cruizo — An AI-powered Car Rental System built with FastAPI and LangGrpah powering modern car rental experiences. This repository contains the complete backend infrastructure for a premium car rental platform that combines traditional booking management with next-generation AI capabilities.
 
-## Prerequisites
+## Overview
+
+Cruizo is an AI-powered Car Rental System (CRS) designed to revolutionize the car rental industry by making the entire process faster, easier, and more affordable for both customers and operators.
+
+1. **Modern Technology Stack**: Built with FastAPI for robust API performance and LangGraph for intelligent conversational AI
+2. **Seamless Rental Experience**: Complete rental journey from vehicle search to return
+3. **Vehicle Inventory Management**: Real-time tracking and availability management
+4. **Intelligent Booking System**: Smart algorithms for optimal booking workflows
+5. **Customer Relationship Management**: Comprehensive tools for managing customer interactions
+6. **AI-Powered Assistant**: Natural language processing for efficient customer inquiry handling
+7. **Dual Value Proposition**: Serves both customers searching for vehicles and operators managing fleets
+
+## Technical Overview
+
+Cruizo Backend is a modern, scalable car rental management system that leverages cutting-edge AI technology to provide intelligent customer assistance and automated operations. The system combines FastAPI for high-performance REST APIs with LangGraph for building sophisticated AI agent workflows.
+
+**Key Technologies:**
+
+- **FastAPI**: High-performance async web framework
+- **LangGraph**: AI agent framework for complex conversational workflows
+- **PostgreSQL with pgvector**: Relational database with vector similarity search
+- **MongoDB**: Document database for flexible data storage
+- **Redis**: In-memory caching and rate limiting
+- **Azure Blob Storage**: Cloud storage for media assets
+- **APScheduler**: Background job scheduling for automated tasks
+
+**Core Features:**
+
+- AI-powered customer assistant for bookings and inquiries
+- Real-time availability and pricing management
+- Intelligent recommendation system
+- Automated email notifications
+- Role-based access control (RBAC)
+- Rate limiting and security middleware
+- Comprehensive API documentation with Swagger UI
+
+**Architecture:**
+
+Cruizo is built on a clean, layer-based architecture pattern that ensures separation of concerns and maintainability across four distinct layers:
+
+- **API Layer**: FastAPI routes, middlewares, and authentication handling
+- **Service Layer**: Business logic implementation, AI agent workflows, and background schedulers
+- **Data Access Layer**: CRUD operations, Pydantic schemas, and SQLAlchemy ORM models
+- **Database Layer**: PostgreSQL with pgvector for relational and vector data, MongoDB for backup logs and related data, Redis for caching, and Azure Blob Storage for file management
+- **AI Assistant**: Built using LangGraph's stateful agent framework, maintaining conversation state with PostgreSQL checkpointer for seamless multi-turn conversations
+
+## Getting Started
+
+### Prerequisites
 
 - Python 3.13+
 - PostgreSQL 14+ with pgvector extension
@@ -27,16 +75,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 pip install uv
 ```
 
-## Installation
+### Installation
 
-### 1. Clone Repository
+#### 1. Clone Repository
 
 ```bash
 git clone <repository-url>
 cd cruizo_backend
 ```
 
-### 2. Environment Setup
+#### 2. Environment Setup
 
 **Using uv (Recommended):**
 
@@ -62,7 +110,7 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+#### 3. Install Dependencies
 
 **Using uv:**
 
@@ -84,7 +132,7 @@ pip install -e .
 pip install -r requirements.txt
 ```
 
-### 4. Setup PostgreSQL
+#### 4. Setup PostgreSQL
 
 ```bash
 # Connect to PostgreSQL
@@ -97,7 +145,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 \q
 ```
 
-## Environment Variables
+### Environment Variables
 
 Create a `.env` file in the root directory. Use `.env.sample` as reference:
 
@@ -165,14 +213,14 @@ LANGSMITH_PROJECT=langsmith_project
 
 All other environment variables have default values set in `.env.sample`.
 
-## Run Migrations
+### Run Migrations
 
 ```bash
 # Run database migrations
 alembic upgrade head
 ```
 
-## Run Project
+### Run Project
 
 **Using uv:**
 
