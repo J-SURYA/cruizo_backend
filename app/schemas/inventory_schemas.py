@@ -43,6 +43,16 @@ class CapacityPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class CarModelDropdown(BaseModel):
+    """
+    Schema for car model dropdown list (minimal fields).
+    """
+    id: int
+    brand: str
+    model: str
+    model_config = ConfigDict(from_attributes=True)
+
+
 class FeaturePublic(BaseModel):
     """
     Schema for car feature details.

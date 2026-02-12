@@ -108,6 +108,24 @@ async def delete_color(
     return schemas.Msg(message="Color deleted successfully")
 
 
+@router.get("/car-models/list", response_model=List[schemas.CarModelDropdown])
+async def list_car_models_dropdown(
+    db: AsyncSession = Depends(get_sql_session),
+    _: models.User = Security(get_current_user, scopes=["cars:read"]),
+):
+    """
+    List all car models for dropdown (minimal fields: id, brand, model).
+
+    Args:
+        db: Database session dependency
+
+    Returns:
+        List of car models with minimal fields for dropdown selection
+    """
+    car_models = await inventory_service.get_all_car_models(db)
+    return car_models
+
+
 @router.get("/car-models/{car_model_id}", response_model=schemas.CarModelWithCars)
 async def get_car_model(
     car_model_id: int,
